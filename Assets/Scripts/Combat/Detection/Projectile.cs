@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 
 namespace Game.Combat
 {
@@ -20,6 +20,7 @@ namespace Game.Combat
         
         [Header("Hit Detection")]
         [SerializeField] private LayerMask targetLayer;
+        [SerializeField] private bool explodeOnTerrain = true; // 지형에 닿으면 터지기
         
         [Header("Effects")]
         [SerializeField] private GameObject hitEffectPrefab;
@@ -39,12 +40,8 @@ namespace Game.Combat
                 rb.isKinematic = false;
             }
             
-            // Collider가 Trigger인지 확인
-            Collider col = GetComponent<Collider>();
-            if (col != null && !col.isTrigger)
-            {
-                col.isTrigger = true;
-            }
+            // Collider 설정 - Trigger 여부는 프리팹에서 설정
+            // 지형 폭발이 필요하면 isTrigger = false로 설정
         }
         
         /// <summary>
@@ -124,6 +121,28 @@ namespace Game.Combat
                 damageable.TakeDamage(damageInfo);
                 
                 // 충돌 처리
+                OnHit(hitPoint);
+            }
+        }
+        
+        /// <summary>
+        /// 물리적 충돌 처리 (땅, 벽 등)
+        /// </summary>
+        private void OnCollisionEnter(Collision collision)
+        {
+            // 이미 충돌했으면 무시
+            if (hasHit)
+                return;
+            
+            // 소유자와의 충돌 무시
+            if (owner != null && (collision.gameObject == owner || collision.transform.IsChildOf(owner.transform)))
+                return;
+            
+            // 지형/장애물에 닿으면 터지기
+            if (explodeOnTerrain)
+            {
+                hasHit = true;
+                Vector3 hitPoint = collision.contacts.Length > 0 ? collision.contacts[0].point : transform.position;
                 OnHit(hitPoint);
             }
         }
