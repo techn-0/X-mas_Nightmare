@@ -152,7 +152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Combat.EnemyHealth
   healthSystem:
-    maxHP: 100
+    maxHP: 10
     isInvincible: 0
     OnDamaged:
       m_PersistentCalls:
@@ -205,7 +205,7 @@ MonoBehaviour:
   meleeAttackCooldown: 1.5
   snowballPrefab: {fileID: 107744432909988749, guid: 49b1c39829aa98a49aa43d8fef50449a, type: 3}
   throwPoint: {fileID: 1525467497787792028}
-  meleeDamage: 20
+  meleeDamage: 5
   meleeRange: 2.5
 --- !u!1 &4851613081570246296
 GameObject:

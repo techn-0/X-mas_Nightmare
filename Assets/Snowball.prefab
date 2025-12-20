@@ -155,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f07fc1728cf41b38d2c94375e26e673, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Combat.Projectile
-  damage: 15
+  damage: 2
   damageType: 0
   speed: 15
   lifetime: 5

@@ -47,7 +47,7 @@ namespace Combat.Entities
                     player = playerObj.transform;
                 }
             }
-            
+
             // 발사 위치가 지정되지 않았으면 자신의 위치 사용
             if (throwPoint == null)
             {

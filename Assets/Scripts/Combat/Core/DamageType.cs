@@ -1,4 +1,4 @@
-﻿namespace Game.Combat
+﻿﻿namespace Game.Combat
 {
     /// <summary>
     /// 데미지 타입 열거형
@@ -13,7 +13,12 @@
         /// <summary>
         /// 화염 데미지 (플레이어 공격)
         /// </summary>
-        Fire
+        Fire,
+        
+        /// <summary>
+        /// 폭발 데미지 (연료통 눈사람)
+        /// </summary>
+        Explosive
     }
 }
 
