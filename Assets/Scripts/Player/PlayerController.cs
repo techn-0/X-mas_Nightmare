@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour
 {
     public float moveSpeed = 5f;
     public float rotationSpeed = 10f;
+    public float gravity = -9.81f;
     
     [Header("Combat Integration")]
     [SerializeField] private bool allowRotationDuringAttack = false;
@@ -13,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private Animator _animator;
     private bool isAttacking = false;
     private bool isFiring = false;
+    private Vector3 velocity;
 
     void Start()
     {
@@ -66,6 +68,21 @@ public class PlayerController : MonoBehaviour
                 _animator.SetFloat("Speed", 0f);
             }
         }
+        
+        // 중력 적용
+        if (_controller.isGrounded)
+        {
+            // 땅에 닿아 있으면 y축 속도를 약간의 음수값으로 설정 (경사면에서도 안정적으로 지면에 붙어있도록)
+            velocity.y = -2f;
+        }
+        else
+        {
+            // 공중에 있으면 중력 가속도 적용
+            velocity.y += gravity * Time.deltaTime;
+        }
+        
+        // 수직 이동 적용
+        _controller.Move(velocity * Time.deltaTime);
     }
     
     /// <summary>
