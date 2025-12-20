@@ -43,6 +43,10 @@ namespace Game.Combat
             {
                 Debug.LogWarning($"HitBox on {gameObject.name}: Collider should be set to Trigger!");
             }
+            
+            // 초기에는 비활성화 상태로 시작
+            isActive = false;
+            gameObject.SetActive(false);
         }
         
         /// <summary>

@@ -42,6 +42,12 @@ namespace Game.Combat.Examples
             if (weaponHitBox != null)
             {
                 weaponHitBox.SetOwner(gameObject);
+                // 히트박스가 처음에 비활성화되어 있는지 확인
+                weaponHitBox.Deactivate();
+            }
+            else
+            {
+                Debug.LogError("[PlayerMeleeAttack] Weapon HitBox is not assigned! Please assign it in the Inspector!");
             }
         }
         
@@ -117,6 +123,12 @@ namespace Game.Combat.Examples
             {
                 Debug.Log("[PlayerMeleeAttack] Playing attack animation");
                 animator.SetTrigger("MeleeAttack");
+                
+                // 애니메이션 이벤트가 없을 경우를 대비한 타이밍
+                // 애니메이션 이벤트가 있으면 OnAttackStart/End가 이벤트에서 호출되고,
+                // 없으면 이 Invoke가 호출됨
+                Invoke(nameof(OnAttackStart), 0.1f);
+                Invoke(nameof(OnAttackEnd), 0.5f);
             }
             else
             {
@@ -169,7 +181,7 @@ namespace Game.Combat.Examples
             {
                 weaponHitBox.ResetHitTargets();
                 weaponHitBox.Activate();
-                Debug.Log("[PlayerMeleeAttack] HitBox activated!");
+                Debug.Log($"[PlayerMeleeAttack] HitBox activated! GameObject active: {weaponHitBox.gameObject.activeSelf}");
             }
             else
             {
@@ -187,9 +199,11 @@ namespace Game.Combat.Examples
             if (weaponHitBox != null)
             {
                 weaponHitBox.Deactivate();
+                Debug.Log($"[PlayerMeleeAttack] HitBox deactivated! GameObject active: {weaponHitBox.gameObject.activeSelf}");
             }
             
             isAttacking = false;
+            Debug.Log($"[PlayerMeleeAttack] Attack finished. Can attack again after: {attackCooldown}s");
         }
     }
 }
