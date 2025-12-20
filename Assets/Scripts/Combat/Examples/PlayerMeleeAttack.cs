@@ -18,11 +18,22 @@ namespace Game.Combat.Examples
         [SerializeField] private bool useMouseLeftClick = true;
         [SerializeField] private Key alternativeKey = Key.Space;
         
+        [Header("Mouse Aiming")]
+        [SerializeField] private Camera mainCamera;
+        [SerializeField] private bool aimTowardsMouse = true;
+        [SerializeField] private float rotationSpeed = 10f;
+        
         private float lastAttackTime = 0f;
         private bool isAttacking = false;
         
         private void Awake()
         {
+            // 카메라 자동 할당
+            if (mainCamera == null)
+            {
+                mainCamera = Camera.main;
+            }
+            
             if (weaponHitBox != null)
             {
                 weaponHitBox.SetOwner(gameObject);
@@ -42,9 +53,9 @@ namespace Game.Combat.Examples
                     Debug.Log("[PlayerMeleeAttack] Mouse left click detected!");
                 }
             }
-            
-            if (!attackInput && Keyboard.current != null)
+            else if (!useMouseLeftClick && Keyboard.current != null)
             {
+                // useMouseLeftClick가 비활성화일 때만 키보드 입력 체크
                 attackInput = Keyboard.current[alternativeKey].wasPressedThisFrame;
                 if (attackInput)
                 {
@@ -85,6 +96,12 @@ namespace Game.Combat.Examples
                 return;
             }
             
+            // 공격하기 전에 마우스 방향으로 회전
+            if (aimTowardsMouse)
+            {
+                AimTowardsMouse();
+            }
+            
             isAttacking = true;
             lastAttackTime = Time.time;
             
@@ -102,6 +119,37 @@ namespace Game.Combat.Examples
                 // 애니메이션이 없으면 바로 공격 시작
                 OnAttackStart();
                 Invoke(nameof(OnAttackEnd), 0.3f);
+            }
+        }
+        
+        /// <summary>
+        /// 마우스 위치를 향해 캐릭터 회전
+        /// </summary>
+        private void AimTowardsMouse()
+        {
+            if (mainCamera == null || Mouse.current == null)
+                return;
+            
+            // 마우스 스크린 위치를 월드 위치로 변환
+            Vector2 mousePosition = Mouse.current.position.ReadValue();
+            Ray ray = mainCamera.ScreenPointToRay(mousePosition);
+            
+            // 캐릭터와 같은 높이의 평면과 교차점 찾기
+            Plane groundPlane = new Plane(Vector3.up, transform.position);
+            float rayDistance;
+            
+            if (groundPlane.Raycast(ray, out rayDistance))
+            {
+                Vector3 targetPoint = ray.GetPoint(rayDistance);
+                Vector3 direction = targetPoint - transform.position;
+                direction.y = 0; // Y축 회전만 사용
+                
+                if (direction.sqrMagnitude > 0.01f)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(direction);
+                    // 공격 시에는 즉시 회전 (부드러운 회전을 원하면 rotationSpeed 사용)
+                    transform.rotation = targetRotation;
+                }
             }
         }
         

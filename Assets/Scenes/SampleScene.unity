@@ -788,7 +788,7 @@ Transform:
   m_GameObject: {fileID: 1480221935}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.26686, y: 0.88, z: 2.695}
+  m_LocalPosition: {x: 0, y: 0.88, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -813,6 +813,9 @@ MonoBehaviour:
   attackCooldown: 0.5
   useMouseLeftClick: 1
   alternativeKey: 1
+  mainCamera: {fileID: 0}
+  aimTowardsMouse: 1
+  rotationSpeed: 10
 --- !u!114 &1480221941
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -854,6 +857,9 @@ MonoBehaviour:
   flameSound: {fileID: 0}
   useMouseRightClick: 1
   alternativeKey: 19
+  mainCamera: {fileID: 0}
+  aimTowardsMouse: 1
+  rotationSpeed: 10
 --- !u!114 &1480221944
 MonoBehaviour:
   m_ObjectHideFlags: 0
