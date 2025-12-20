@@ -11,9 +11,16 @@ namespace Game.Combat
         [Header("Health System")]
         [SerializeField] private HealthSystem healthSystem = new HealthSystem();
         
+        [Header("Audio")]
+        [SerializeField] private AudioClip damageSound;
+        [SerializeField] private AudioClip deathSound;
+        [Range(0f, 1f)]
+        [SerializeField] private float soundVolume = 1f;
+        
         private HitFeedback hitFeedback;
         private InvincibilityController invincibilityController;
         private Animator animator;
+        private AudioSource audioSource;
         
         #region IDamageable Implementation
         
@@ -32,6 +39,14 @@ namespace Game.Combat
         {
             // 컴포넌트 초기화
             animator = GetComponentInChildren<Animator>();
+            
+            // AudioSource 초기화
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+                audioSource.playOnAwake = false;
+            }
             
             hitFeedback = GetComponent<HitFeedback>();
             if (hitFeedback == null)
@@ -64,6 +79,12 @@ namespace Game.Combat
             // 체력 시스템에 데미지 전달
             healthSystem.TakeDamage(damageInfo);
             
+            // 데미지 효과음 재생
+            if (audioSource != null && damageSound != null && !healthSystem.IsDead)
+            {
+                audioSource.PlayOneShot(damageSound, soundVolume);
+            }
+            
             // 피격 피드백 재생
             if (hitFeedback != null)
             {
@@ -95,6 +116,12 @@ namespace Game.Combat
         {
             Debug.Log("Player died!");
             
+            // 사망 효과음 재생
+            if (audioSource != null && deathSound != null)
+            {
+                audioSource.PlayOneShot(deathSound, soundVolume);
+            }
+            
             // 사망 애니메이션 재생
             if (animator != null)
             {
@@ -121,16 +148,11 @@ namespace Game.Combat
                 flamethrower.enabled = false;
             }
             
-            // TODO: 게임오버 로직 호출
-            // GameManager.Instance.OnPlayerDeath();
-            
-            // 임시: 일정 시간 후 오브젝트 비활성화
-            // Invoke(nameof(DisablePlayer), 3f);
-        }
-        
-        private void DisablePlayer()
-        {
-            gameObject.SetActive(false);
+            // 게임 매니저에 플레이어 사망 알림
+            if (global::GameManager.Instance != null)
+            {
+                global::GameManager.Instance.PlayerDied();
+            }
         }
         
         private void OnDestroy()

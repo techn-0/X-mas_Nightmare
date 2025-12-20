@@ -310,6 +310,12 @@ namespace Combat.Entities
             isDead = true;
             Debug.Log("[Boss Santa] 보스 사망!");
             
+            // 게임 매니저에 보스 사망 알림 (사망 시퀀스보다 먼저!)
+            if (global::GameManager.Instance != null)
+            {
+                global::GameManager.Instance.BossDied();
+            }
+            
             // 사망 시퀀스 실행
             if (deathSequence != null)
             {
