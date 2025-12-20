@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 107744432909988749}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 2.21}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -164,6 +164,9 @@ MonoBehaviour:
     m_Bits: 64
   explodeOnTerrain: 0
   hitEffectPrefab: {fileID: 0}
+  launchSound: {fileID: 0}
+  hitSound: {fileID: 8300000, guid: ffc53734c27cdf94d89dad9815a43434, type: 3}
+  soundVolume: 1
 --- !u!96 &2563830018547720978
 TrailRenderer:
   serializedVersion: 4
@@ -172,7 +175,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 107744432909988749}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

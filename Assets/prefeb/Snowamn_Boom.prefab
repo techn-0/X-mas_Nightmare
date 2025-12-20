@@ -207,6 +207,8 @@ MonoBehaviour:
   explosionRadius: 3
   explosionDelay: 0.3
   explosionEffect: {fileID: 8082215763926354752, guid: c03ba0565330dfb4d8b7d66461f6fb92, type: 3}
+  explosionSound: {fileID: 8300000, guid: 58625602ac4f3424f8809e586ba3b5bb, type: 3}
+  explosionSoundVolume: 1
 --- !u!1 &4851613081570246296
 GameObject:
   m_ObjectHideFlags: 0

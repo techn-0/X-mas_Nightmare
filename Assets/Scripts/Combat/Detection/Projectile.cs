@@ -25,7 +25,13 @@ namespace Game.Combat
         [Header("Effects")]
         [SerializeField] private GameObject hitEffectPrefab;
         
+        [Header("Sound Effects")]
+        [SerializeField] private AudioClip launchSound;
+        [SerializeField] private AudioClip hitSound;
+        [SerializeField] [Range(0f, 1f)] private float soundVolume = 0.7f;
+        
         private Rigidbody rb;
+        private AudioSource audioSource;
         private GameObject owner;
         private bool hasHit = false;
         
@@ -39,6 +45,16 @@ namespace Game.Combat
                 rb.useGravity = false;
                 rb.isKinematic = false;
             }
+            
+            // AudioSource 설정
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+            audioSource.playOnAwake = false;
+            audioSource.spatialBlend = 1.0f; // 3D 사운드
+            audioSource.volume = soundVolume;
             
             // Collider 설정 - Trigger 여부는 프리팹에서 설정
             // 지형 폭발이 필요하면 isTrigger = false로 설정
@@ -68,6 +84,9 @@ namespace Game.Combat
             {
                 transform.rotation = Quaternion.LookRotation(direction);
             }
+            
+            // 발사 사운드 재생
+            PlaySound(launchSound);
             
             // 수명 후 자동 파괴
             Destroy(gameObject, lifetime);
@@ -159,8 +178,25 @@ namespace Game.Combat
                 Destroy(hitEffect, 2f);
             }
             
+            // 충돌 사운드 재생 (GameObject 파괴 전에 3D 공간에 사운드 배치)
+            if (hitSound != null)
+            {
+                AudioSource.PlayClipAtPoint(hitSound, hitPoint, soundVolume);
+            }
+            
             // 투사체 파괴
             Destroy(gameObject);
+        }
+        
+        /// <summary>
+        /// 사운드 재생
+        /// </summary>
+        private void PlaySound(AudioClip clip)
+        {
+            if (clip != null && audioSource != null)
+            {
+                audioSource.PlayOneShot(clip, soundVolume);
+            }
         }
     }
 }

@@ -26,6 +26,10 @@ namespace Combat.Entities
         [Header("Visual Effects")]
         [SerializeField] private GameObject explosionEffect; // 폭발 이펙트 프리팹
         
+        [Header("Audio Settings")]
+        [SerializeField] private AudioClip explosionSound; // 폭발 사운드
+        [SerializeField] [Range(0f, 1f)] private float explosionSoundVolume = 1f; // 폭발 사운드 볼륨
+        
         private EnemyHealth enemyHealth;
         private bool isExploding; // 폭발 중인지 확인
         
@@ -174,6 +178,12 @@ namespace Combat.Entities
         private void Explode()
         {
             Debug.Log($"{gameObject.name} 폭발!");
+            
+            // 폭발 사운드 재생 (GameObject 파괴 전에 3D 공간에 사운드 배치)
+            if (explosionSound != null)
+            {
+                AudioSource.PlayClipAtPoint(explosionSound, transform.position, explosionSoundVolume);
+            }
             
             // 폭발 이펙트 생성
             if (explosionEffect != null)
