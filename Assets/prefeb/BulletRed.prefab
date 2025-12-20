@@ -9634,4 +9634,4 @@ MonoBehaviour:
   hitEffectPrefab: {fileID: 0}
   launchSound: {fileID: 8300000, guid: dd8db3f9ea395ff49909fb8d2d1fb421, type: 3}
   hitSound: {fileID: 0}
-  soundVolume: 0.7
+  soundVolume: 0.434
