@@ -7,10 +7,12 @@ public class PlayerController : MonoBehaviour
     public float rotationSpeed = 10f;
 
     private CharacterController _controller;
+    private Animator _animator;
 
     void Start()
     {
         _controller = GetComponent<CharacterController>();
+        _animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -37,6 +39,20 @@ public class PlayerController : MonoBehaviour
             // 이동 방향을 바라보도록 회전
             Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            
+            // 애니메이션 Speed 파라미터 설정 (Run 상태)
+            if (_animator != null)
+            {
+                _animator.SetFloat("Speed", 1f);
+            }
+        }
+        else
+        {
+            // 정지 상태일 때 애니메이션 Speed 파라미터 설정 (Idle 상태)
+            if (_animator != null)
+            {
+                _animator.SetFloat("Speed", 0f);
+            }
         }
     }
 }

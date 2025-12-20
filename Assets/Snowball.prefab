@@ -157,7 +157,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Game.Combat.Projectile
   damage: 15
   damageType: 0
-  speed: 20
+  speed: 15
   lifetime: 5
   targetLayer:
     serializedVersion: 2
