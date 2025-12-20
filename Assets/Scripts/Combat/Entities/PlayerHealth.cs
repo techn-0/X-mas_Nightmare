@@ -23,6 +23,11 @@ namespace Game.Combat
         
         #endregion
         
+        /// <summary>
+        /// 외부에서 HealthSystem 이벤트에 접근하기 위한 프로퍼티
+        /// </summary>
+        public HealthSystem HealthSystemRef => healthSystem;
+        
         private void Awake()
         {
             // 컴포넌트 초기화
