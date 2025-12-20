@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Game.Combat.UI
 {
@@ -14,12 +15,12 @@ namespace Game.Combat.UI
         
         [Header("UI Elements")]
         [SerializeField] private Image fillImage;
-        [SerializeField] private Text healthText;
+        [SerializeField] private TextMeshProUGUI healthText;
         [SerializeField] private CanvasGroup canvasGroup;
         
         [Header("Position Settings")]
-        [Tooltip("플레이어로부터의 오프셋 (오른쪽 = X+)")]
-        [SerializeField] private Vector3 offsetFromPlayer = new Vector3(1.5f, 0.5f, 0f);
+        [Tooltip("플레이어로부터의 오프셋 (오른쪽 = X+, 위 = Y+, 아래 = Y-)")]
+        [SerializeField] private Vector3 offsetFromPlayer = new Vector3(0f, -0.5f, 0f);
         [SerializeField] private bool followPlayer = true;
         [SerializeField] private bool faceCamera = true;
         
@@ -76,12 +77,6 @@ namespace Game.Combat.UI
         
         private void Update()
         {
-            // 플레이어 위치 추적
-            if (followPlayer && playerHealth != null)
-            {
-                UpdatePosition();
-            }
-            
             // 체력바 애니메이션
             if (Mathf.Abs(currentFillAmount - targetFillAmount) > 0.001f)
             {
@@ -115,14 +110,30 @@ namespace Game.Combat.UI
             }
         }
         
+        private void LateUpdate()
+        {
+            // 플레이어 위치 추적 (카메라 업데이트 이후)
+            if (followPlayer && playerHealth != null)
+            {
+                UpdatePosition();
+            }
+        }
+        
         private void UpdatePosition()
         {
-            Vector3 targetPosition = playerHealth.transform.position + offsetFromPlayer;
-            transform.position = targetPosition;
+            if (playerHealth == null)
+                return;
+            
+            // 플레이어의 월드 위치 가져오기
+            Vector3 playerPosition = playerHealth.transform.position;
+            
+            // 오프셋 적용 (월드 좌표계 기준)
+            transform.position = playerPosition + offsetFromPlayer;
             
             // 카메라를 향해 회전 (빌보드)
             if (faceCamera && mainCamera != null)
             {
+                // 카메라를 정면으로 바라보도록 회전
                 transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.forward,
                     mainCamera.transform.rotation * Vector3.up);
             }

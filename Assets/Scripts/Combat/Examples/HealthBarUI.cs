@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace Game.Combat.Examples
 {
@@ -14,7 +16,7 @@ namespace Game.Combat.Examples
         
         [Header("UI Elements")]
         [SerializeField] private Slider healthSlider;
-        [SerializeField] private Text healthText;
+        [SerializeField] private TextMeshProUGUI healthText;
         [SerializeField] private Image fillImage;
         
         [Header("Visual Settings")]
@@ -24,10 +26,19 @@ namespace Game.Combat.Examples
         [SerializeField] private float lowHealthThreshold = 0.3f;
         [SerializeField] private float midHealthThreshold = 0.6f;
         
+        [Header("Position Settings")]
+        [Tooltip("캐릭터로부터의 오프셋 (오른쪽 = X+, 위 = Y+, 아래 = Y-)")]
+        [SerializeField] private Vector3 offsetFromCharacter = new Vector3(0f, -0.5f, 0f);
+        [SerializeField] private bool followCharacter = true;
+        [SerializeField] private bool faceCamera = true;
+        
         private IDamageable damageable;
+        private Camera mainCamera;
         
         private void Start()
         {
+            mainCamera = Camera.main;
+            
             // IDamageable 인터페이스 가져오기
             if (healthComponent != null)
             {
@@ -44,6 +55,40 @@ namespace Game.Combat.Examples
                 {
                     Debug.LogError("HealthBarUI: healthComponent does not implement IDamageable!");
                 }
+            }
+        }
+        
+        /// <summary>
+        /// 매 프레임 위치 및 회전 업데이트 (카메라 업데이트 이후)
+        /// </summary>
+        private void LateUpdate()
+        {
+            if (followCharacter && healthComponent != null)
+            {
+                UpdatePosition();
+            }
+        }
+        
+        /// <summary>
+        /// 체력바 위치 및 회전 업데이트
+        /// </summary>
+        private void UpdatePosition()
+        {
+            if (healthComponent == null)
+                return;
+            
+            // 캐릭터의 월드 위치 가져오기
+            Vector3 characterPosition = healthComponent.transform.position;
+            
+            // 오프셋 적용 (월드 좌표계 기준)
+            transform.position = characterPosition + offsetFromCharacter;
+            
+            // 카메라를 향해 회전 (빌보드 효과)
+            if (faceCamera && mainCamera != null)
+            {
+                // 카메라를 정면으로 바라보도록 회전
+                transform.LookAt(transform.position + mainCamera.transform.rotation * Vector3.forward,
+                    mainCamera.transform.rotation * Vector3.up);
             }
         }
         
