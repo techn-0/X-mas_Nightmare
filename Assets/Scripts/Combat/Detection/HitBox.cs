@@ -22,7 +22,16 @@ namespace Game.Combat
         [SerializeField] private LayerMask targetLayer;
         [SerializeField] private bool hitOnce = true;
         
+        [Header("Continuous Damage (화염방사기용)")]
+        [Tooltip("지속 피해를 주는 간격 (초). hitOnce가 false일 때만 작동")]
+        [SerializeField] private float fireInterval = 0.1f;
+        [Tooltip("여러 대상을 동시에 맞출 수 있는지")]
+        [SerializeField] private bool canHitMultiple = false;
+        [Tooltip("동시에 맞출 수 있는 최대 대상 수 (canHitMultiple이 true일 때)")]
+        [SerializeField] private int maxTargets = 10;
+        
         private HashSet<Collider> hitTargets = new HashSet<Collider>();
+        private Dictionary<Collider, float> lastHitTime = new Dictionary<Collider, float>();
         private bool isActive = false;
         private GameObject owner;
         
@@ -70,6 +79,7 @@ namespace Game.Combat
         public void ResetHitTargets()
         {
             hitTargets.Clear();
+            lastHitTime.Clear();
             Debug.Log($"[HitBox] {gameObject.name} hit targets reset");
         }
         
@@ -95,6 +105,20 @@ namespace Game.Combat
             ProcessHit(other);
         }
         
+        private void OnTriggerExit(Collider other)
+        {
+            // 범위를 벗어나면 목록에서 제거 (지속 피해용)
+            if (!hitOnce)
+            {
+                if (hitTargets.Contains(other))
+                {
+                    hitTargets.Remove(other);
+                    lastHitTime.Remove(other);
+                    Debug.Log($"[HitBox] {other.gameObject.name} left the hitbox range");
+                }
+            }
+        }
+        
         /// <summary>
         /// 충돌 처리 및 데미지 전달
         /// </summary>
@@ -118,6 +142,33 @@ namespace Game.Combat
                 return;
             }
             
+            // 지속 피해 간격 체크 (hitOnce가 false일 때)
+            if (!hitOnce)
+            {
+                if (lastHitTime.ContainsKey(other))
+                {
+                    float timeSinceLastHit = Time.time - lastHitTime[other];
+                    if (timeSinceLastHit < fireInterval)
+                    {
+                        // 아직 간격이 안 지나서 피해를 주지 않음
+                        return;
+                    }
+                }
+                
+                // 동시 타격 수 제한 체크
+                if (!canHitMultiple && hitTargets.Count >= 1)
+                {
+                    Debug.Log($"[HitBox] Can only hit one target at a time");
+                    return;
+                }
+                
+                if (canHitMultiple && hitTargets.Count >= maxTargets)
+                {
+                    Debug.Log($"[HitBox] Max targets ({maxTargets}) reached");
+                    return;
+                }
+            }
+            
             // IDamageable 인터페이스 찾기
             IDamageable damageable = other.GetComponent<IDamageable>();
             if (damageable == null)
@@ -127,8 +178,9 @@ namespace Game.Combat
             {
                 Debug.Log($"[HitBox] Found IDamageable on {other.gameObject.name}!");
                 
-                // 중복 피격 방지
+                // 피격 목록에 추가 및 시간 기록
                 hitTargets.Add(other);
+                lastHitTime[other] = Time.time;
                 
                 // 데미지 정보 생성
                 Vector3 hitPoint = other.ClosestPoint(transform.position);

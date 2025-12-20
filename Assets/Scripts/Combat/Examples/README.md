@@ -1,12 +1,81 @@
-﻿# 데미지 시스템 예시 스크립트
+﻿﻿# 데미지 시스템 예시 스크립트
 
 이 폴더에는 데미지 시스템을 실제로 사용하는 방법을 보여주는 예시 스크립트들이 포함되어 있습니다.
 
 ---
 
+## 🚀 빠른 시작 가이드
+
+**Unity 에디터에서 화염방사기와 눈덩이 공격을 테스트하려면:**
+
+👉 **[../QUICK_CHECKLIST.md](../QUICK_CHECKLIST.md)** 를 확인하세요!
+
+- 30분 안에 테스트 시작 가능
+- 단계별 체크리스트 제공
+- 모든 설정 방법 포함
+
+---
+
 ## 📁 포함된 예시 스크립트
 
-### 1. PlayerMeleeAttack.cs
+### 1. PlayerFlamethrower.cs ⭐ NEW!
+플레이어의 화염방사기 공격
+
+**기능:**
+- 지속적인 화염 발사
+- 연료 시스템 (소모 및 회복)
+- HitBox 기반 범위 공격
+- 파티클 효과 연동
+
+**Unity 설정:**
+- Component 추가: `PlayerFlamethrower`
+- FlameOrigin GameObject 생성 및 연결
+- FlameHitbox Prefab 연결
+- 자세한 설정: [../QUICK_CHECKLIST.md](../QUICK_CHECKLIST.md)
+
+### 2. ProjectileLauncher.cs ⭐ NEW!
+투사체 발사 시스템 (눈사람의 눈덩이)
+
+**기능:**
+- 자동/수동 발사 모드
+- 발사 각도 조절
+- 발사 속도 제어
+- 이벤트 시스템
+
+**Unity 설정:**
+- Component 추가: `ProjectileLauncher`
+- LaunchPoint GameObject 생성 및 연결
+- Projectile Prefab (Snowball) 연결
+- 자세한 설정: [../QUICK_CHECKLIST.md](../QUICK_CHECKLIST.md)
+
+### 3. SimplePlayerController.cs ⭐ NEW!
+테스트용 플레이어 컨트롤러
+
+**기능:**
+- WASD 이동
+- 마우스 조준 및 회전
+- 화염방사기 조작 (좌클릭)
+- 근접 공격 조작 (우클릭)
+
+**Unity 설정:**
+- Player GameObject에 추가
+- 자동으로 컴포넌트 연결
+
+### 4. SimpleSnowmanAI.cs ⭐ NEW!
+테스트용 눈사람 AI
+
+**기능:**
+- 플레이어 자동 감지
+- 플레이어 추적 및 조준
+- 자동 투사체 발사
+- 발사 간격 랜덤화
+
+**Unity 설정:**
+- Snowman GameObject에 추가
+- Player GameObject 연결
+- 자세한 설정: [../QUICK_CHECKLIST.md](../QUICK_CHECKLIST.md)
+
+### 5. PlayerMeleeAttack.cs
 성냥팔이 소녀의 횟불 근접 공격 예시
 
 **기능:**
