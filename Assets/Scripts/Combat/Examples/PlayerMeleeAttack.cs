@@ -13,6 +13,8 @@ namespace Game.Combat.Examples
         [SerializeField] private HitBox weaponHitBox;
         [SerializeField] private Animator animator;
         [SerializeField] private float attackCooldown = 0.5f;
+        [SerializeField] private string attackTriggerName = "MeleeAttack"; // Animator 트리거 이름
+        [SerializeField] private float attackDuration = 0.5f; // 애니메이션이 없을 때 공격 지속 시간
         
         [Header("Input - New Input System")]
         [SerializeField] private bool useMouseLeftClick = true;
@@ -47,6 +49,12 @@ namespace Game.Combat.Examples
         
         private void Update()
         {
+            // 공격 중이 아닐 때 마우스 방향으로 회전 (지속적으로)
+            if (!isAttacking && aimTowardsMouse)
+            {
+                AimTowardsMouse(true); // 부드러운 회전 사용
+            }
+            
             // 공격 입력 처리 (New Input System)
             bool attackInput = false;
             
@@ -101,10 +109,10 @@ namespace Game.Combat.Examples
                 return;
             }
             
-            // 공격하기 전에 마우스 방향으로 회전
+            // 공격하기 전에 마우스 방향으로 즉시 회전
             if (aimTowardsMouse)
             {
-                AimTowardsMouse();
+                AimTowardsMouse(false); // 즉시 회전
             }
             
             isAttacking = true;
@@ -112,25 +120,30 @@ namespace Game.Combat.Examples
             
             Debug.Log("[PlayerMeleeAttack] Attack started!");
             
+            // 즉시 공격 판정 시작 (히트박스 활성화)
+            OnAttackStart();
+            
             // 애니메이션 재생
             if (animator != null)
             {
-                Debug.Log("[PlayerMeleeAttack] Playing attack animation");
-                animator.SetTrigger("MeleeAttack");
+                Debug.Log($"[PlayerMeleeAttack] Playing attack animation with trigger: {attackTriggerName}");
+                animator.SetTrigger(attackTriggerName);
             }
             else
             {
-                Debug.Log("[PlayerMeleeAttack] No animator - using direct attack timing");
-                // 애니메이션이 없으면 바로 공격 시작
-                OnAttackStart();
-                Invoke(nameof(OnAttackEnd), 0.3f);
+                Debug.LogWarning("[PlayerMeleeAttack] No animator assigned - using manual timing");
             }
+            
+            // 공격 종료 타이머 설정
+            CancelInvoke(nameof(OnAttackEnd)); // 이전 타이머 취소
+            Invoke(nameof(OnAttackEnd), attackDuration);
         }
         
         /// <summary>
         /// 마우스 위치를 향해 캐릭터 회전
         /// </summary>
-        private void AimTowardsMouse()
+        /// <param name="smoothRotation">부드러운 회전 사용 여부</param>
+        private void AimTowardsMouse(bool smoothRotation = false)
         {
             if (mainCamera == null || Mouse.current == null)
                 return;
@@ -152,8 +165,21 @@ namespace Game.Combat.Examples
                 if (direction.sqrMagnitude > 0.01f)
                 {
                     Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    // 공격 시에는 즉시 회전 (부드러운 회전을 원하면 rotationSpeed 사용)
-                    transform.rotation = targetRotation;
+                    
+                    if (smoothRotation)
+                    {
+                        // 부드러운 회전 (평상시)
+                        transform.rotation = Quaternion.Slerp(
+                            transform.rotation, 
+                            targetRotation, 
+                            rotationSpeed * Time.deltaTime
+                        );
+                    }
+                    else
+                    {
+                        // 즉시 회전 (공격 시)
+                        transform.rotation = targetRotation;
+                    }
                 }
             }
         }
@@ -182,6 +208,13 @@ namespace Game.Combat.Examples
         /// </summary>
         public void OnAttackEnd()
         {
+            // 이미 공격이 끝난 경우 중복 호출 방지
+            if (!isAttacking)
+            {
+                Debug.Log("[PlayerMeleeAttack] OnAttackEnd called but already ended - ignoring");
+                return;
+            }
+            
             Debug.Log("[PlayerMeleeAttack] OnAttackEnd - Deactivating HitBox");
             
             if (weaponHitBox != null)
@@ -190,6 +223,9 @@ namespace Game.Combat.Examples
             }
             
             isAttacking = false;
+            
+            // Invoke 타이머 취소 (Animation Event에서 호출된 경우)
+            CancelInvoke(nameof(OnAttackEnd));
         }
     }
 }

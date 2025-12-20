@@ -59,8 +59,7 @@ namespace Game.Combat
         public void Activate()
         {
             isActive = true;
-            gameObject.SetActive(true); // GameObject도 활성화
-            Debug.Log($"[HitBox] {gameObject.name} ACTIVATED - ready to hit! GameObject enabled.");
+            Debug.Log($"[HitBox] {gameObject.name} ACTIVATED - ready to hit!");
         }
         
         /// <summary>
@@ -69,8 +68,7 @@ namespace Game.Combat
         public void Deactivate()
         {
             isActive = false;
-            gameObject.SetActive(false); // GameObject도 비활성화
-            Debug.Log($"[HitBox] {gameObject.name} DEACTIVATED - GameObject disabled.");
+            Debug.Log($"[HitBox] {gameObject.name} DEACTIVATED.");
         }
         
         /// <summary>
