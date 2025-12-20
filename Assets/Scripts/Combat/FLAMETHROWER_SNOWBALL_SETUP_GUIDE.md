@@ -60,10 +60,13 @@
 2. 검색: `HitBox` 입력
 3. **HitBox** 선택하여 추가
 4. 설정:
-   - **Base Damage**: `10` (단일 타격 피해)
+   - **Damage**: `10` (단일 타격 피해)
    - **Damage Type**: 드롭다운에서 `Fire` 선택
-   - **Source**: 드롭다운에서 `Player` 선택 (자동 설정 필요 시 스크립트에서)
-   - **Target Layers**: 
+   - **Deals Dot Damage**: ❌ 해제 (선택사항 - 화상 지속 피해)
+   - **Dot Duration**: `3` (DoT 활성화 시)
+   - **Dot Damage Per Tick**: `5` (DoT 활성화 시)
+   - **Dot Tick Interval**: `0.5` (DoT 활성화 시)
+   - **Target Layer**: 
      1. 드롭다운 클릭
      2. **Nothing** 클릭 (전체 해제)
      3. **Enemy** ✅ 체크 (Enemy만 선택)
@@ -71,8 +74,6 @@
    - **Fire Interval**: `0.1` (0.1초마다 피해)
    - **Can Hit Multiple**: ✅ **체크** (여러 적 동시 타격)
    - **Max Targets**: `10` (최대 10명까지 동시 타격)
-   - **Deals Dot Damage**: ❌ 해제 (선택사항 - 화상 지속 피해)
-   - **Debug**: ❌ 해제 (테스트 시 체크하면 로그 확인 가능)
 
 ### 3-4. 머티리얼 설정 (선택사항)
 1. **Project 창**에서 우클릭 > **Create > Material**
@@ -126,18 +127,15 @@
 2. 검색: `Projectile` 입력
 3. **Projectile** 선택하여 추가
 4. 설정:
-   - **Base Damage**: `15`
-   - **Damage Type**: 드롭다운에서 `Ice` 선택
+   - **Damage**: `15`
+   - **Damage Type**: 드롭다운에서 `Physical` 선택
    - **Speed**: `10`
    - **Lifetime**: `5`
-   - **Source**: 드롭다운에서 `Enemy` 선택
-   - **Target Layers**:
+   - **Target Layer**:
      1. 드롭다운 클릭
      2. **Nothing** 클릭
      3. **Player** ✅ 체크
-   - **Destroy On Hit**: ✅ **체크**
-   - **Pierce Count**: `0`
-   - **Hit Effect** / **Destroy Effect**: 비워두기 (나중에 추가 가능)
+   - **Hit Effect Prefab**: 비워두기 (나중에 추가 가능)
 
 ### 4-5. 머티리얼 설정 (선택사항)
 1. **Project 창** 우클릭 > **Create > Material**
@@ -304,27 +302,59 @@
    - **Projectile Prefab**:
      1. **Project 창**의 **Prefabs/Snowball** 찾기
      2. 드래그하여 이 필드에 드롭
-   - **Launch Point**:
+   - **Fire Point**:
      1. 오른쪽 동그라미 아이콘 클릭
      2. **LaunchPoint** 더블클릭 선택
-   - **Launch Force**: `15`
-   - **Fire Rate**: `1.5` (1.5초마다 발사)
-   - **Auto Fire**: ✅ **체크**
-   - **Launch Angle**: `0` (직선 발사)
+   - **Projectile Speed**: `10` (발사 속도)
+   - **Attack Cooldown**: `1.5` (1.5초마다 발사)
+   - **Auto Target**: ✅ **체크** (자동으로 타겟 추적)
+   - **Use Input**: ❌ **해제** (적 AI는 입력 사용 안 함)
+   - **Shoot Key**: `E` (Use Input 활성화 시에만 사용)
 
-### 6-8. 눈사람 AI 추가
+### 6-8. 눈사람 테스트용 간단 AI (선택사항)
+
+**참고**: 현재 프로젝트에 AI 스크립트가 없으므로, 두 가지 방법으로 테스트 가능합니다:
+
+**방법 1: 수동 테스트 (간단)**
 1. **Snowman** 선택
-2. **Add Component** > 검색: `SimpleSnowmanAI`
-3. 설정:
-   - **Player**:
-     1. 오른쪽 동그라미 아이콘 클릭
-     2. **Player** 오브젝트 더블클릭 선택
-   - **Detection Range**: `15`
-   - **Rotation Speed**: `180`
-   - **Auto Find Player**: ✅ **체크** (자동 탐색)
-   - **Fire Interval**: `1.5`
-   - **Randomize Interval**: ✅ **체크**
-   - **Interval Variation**: `0.5`
+2. **ProjectileLauncher** 컴포넌트에서:
+   - **Use Input**: ✅ **체크**
+   - **Shoot Key**: `E`
+3. Play 모드에서 **E키**를 눌러 수동으로 발사 테스트
+
+**방법 2: 간단한 AI 스크립트 생성 (고급)**
+1. **Assets/Scripts/Combat/Examples** 폴더에 새 스크립트 생성:
+   - 이름: `SimpleEnemyAI.cs`
+2. 스크립트 내용:
+```csharp
+using UnityEngine;
+
+namespace Game.Combat.Examples
+{
+    public class SimpleEnemyAI : MonoBehaviour
+    {
+        [SerializeField] private float fireInterval = 1.5f;
+        private ProjectileLauncher launcher;
+        private float nextFireTime;
+
+        void Start()
+        {
+            launcher = GetComponent<ProjectileLauncher>();
+        }
+
+        void Update()
+        {
+            if (Time.time >= nextFireTime)
+            {
+                launcher?.ShootAtPlayer();
+                nextFireTime = Time.time + fireInterval;
+            }
+        }
+    }
+}
+```
+3. **Snowman**에 **SimpleEnemyAI** 컴포넌트 추가
+4. **Fire Interval**: `1.5` 설정
 
 ### 6-9. 눈사람 색상 변경 (선택사항)
 1. **Body_Bottom**과 **Body_Top** 각각 선택
@@ -408,11 +438,14 @@
 1. **Snowman** 선택
 2. **ProjectileLauncher** 컴포넌트 확인:
    - **Projectile Prefab** 할당되었는지
-   - **Launch Point** 할당되었는지
-   - **Auto Fire** 체크되었는지
-3. **SimpleSnowmanAI** 확인:
-   - **Player** 할당되었는지
-   - **Detection Range** 안에 플레이어가 있는지 (기본 15)
+   - **Fire Point** 할당되었는지
+3. **수동 테스트**: 
+   - **Use Input** 체크
+   - **Shoot Key**: `E`
+   - Play 모드에서 E 키 눌러보기
+4. **AI 사용 시**:
+   - **SimpleEnemyAI** 컴포넌트가 추가되었는지 확인
+   - **Player 태그**가 제대로 설정되었는지 확인
 
 ### 문제 3: 눈덩이가 플레이어를 통과함
 **증상**: 눈덩이가 플레이어에게 닿아도 피해 없음
@@ -517,13 +550,14 @@
 
 ### 눈사람 공격 조정
 **강하게 만들려면:**
-- **Snowball > Base Damage**: 15 → 30
-- **Fire Rate**: 1.5 → 0.5 (더 빠른 발사)
-- **Launch Force**: 15 → 25 (더 빠른 속도)
+- **Snowball > Damage**: 15 → 30
+- **ProjectileLauncher > Attack Cooldown**: 1.5 → 0.5 (더 빠른 발사)
+- **Snowball > Speed**: 10 → 20 (더 빠른 속도)
 
 **약하게 만들려면:**
-- **Fire Rate**: 1.5 → 3.0 (느린 발사)
-- **Detection Range**: 15 → 10 (짧은 감지)
+- **ProjectileLauncher > Attack Cooldown**: 1.5 → 3.0 (느린 발사)
+- **Snowball > Speed**: 10 → 5 (느린 속도)
+- **SimpleEnemyAI > Fire Interval**: 1.5 → 3.0 (AI 사용 시)
 
 ---
 
@@ -552,7 +586,7 @@
 - [ ] ProjectileLauncher 컴포넌트 추가
 - [ ] LaunchPoint 생성 및 연결
 - [ ] Snowball Prefab 연결
-- [ ] SimpleSnowmanAI 추가 및 Player 연결
+- [ ] SimpleEnemyAI 추가 (선택사항, AI 테스트용)
 
 ### 테스트 완료
 - [ ] Play 모드 실행
