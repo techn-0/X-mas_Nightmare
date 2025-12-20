@@ -26,6 +26,11 @@ namespace Game.Combat.Examples
         private float lastAttackTime = 0f;
         private bool isAttacking = false;
         
+        /// <summary>
+        /// 현재 공격 중인지 확인
+        /// </summary>
+        public bool IsAttacking => isAttacking;
+        
         private void Awake()
         {
             // 카메라 자동 할당

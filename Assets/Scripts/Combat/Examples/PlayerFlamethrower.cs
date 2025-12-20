@@ -25,6 +25,11 @@ namespace Game.Combat.Examples
         
         private bool isFiring = false;
         
+        /// <summary>
+        /// 현재 발사 중인지 확인
+        /// </summary>
+        public bool IsFiring => isFiring;
+        
         private void Awake()
         {
             // 카메라 자동 할당
