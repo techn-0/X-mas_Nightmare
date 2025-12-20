@@ -116,7 +116,7 @@ namespace Game.Combat.Examples
             if (animator != null)
             {
                 Debug.Log("[PlayerMeleeAttack] Playing attack animation");
-                animator.SetTrigger("Attack");
+                animator.SetTrigger("MeleeAttack");
             }
             else
             {

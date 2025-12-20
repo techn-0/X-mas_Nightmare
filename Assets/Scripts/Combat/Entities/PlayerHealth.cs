@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 
 namespace Game.Combat
 {
@@ -13,6 +13,7 @@ namespace Game.Combat
         
         private HitFeedback hitFeedback;
         private InvincibilityController invincibilityController;
+        private Animator animator;
         
         #region IDamageable Implementation
         
@@ -25,6 +26,8 @@ namespace Game.Combat
         private void Awake()
         {
             // 컴포넌트 초기화
+            animator = GetComponentInChildren<Animator>();
+            
             hitFeedback = GetComponent<HitFeedback>();
             if (hitFeedback == null)
             {
@@ -87,11 +90,37 @@ namespace Game.Combat
         {
             Debug.Log("Player died!");
             
+            // 사망 애니메이션 재생
+            if (animator != null)
+            {
+                animator.SetBool("isDead", true);
+            }
+            
+            // 플레이어 컨트롤 비활성화
+            var playerController = GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                playerController.enabled = false;
+            }
+            
+            // 공격 기능 비활성화
+            var meleeAttack = GetComponent<Game.Combat.Examples.PlayerMeleeAttack>();
+            if (meleeAttack != null)
+            {
+                meleeAttack.enabled = false;
+            }
+            
+            var flamethrower = GetComponent<Game.Combat.Examples.PlayerFlamethrower>();
+            if (flamethrower != null)
+            {
+                flamethrower.enabled = false;
+            }
+            
             // TODO: 게임오버 로직 호출
             // GameManager.Instance.OnPlayerDeath();
             
             // 임시: 일정 시간 후 오브젝트 비활성화
-            Invoke(nameof(DisablePlayer), 1f);
+            // Invoke(nameof(DisablePlayer), 3f);
         }
         
         private void DisablePlayer()
