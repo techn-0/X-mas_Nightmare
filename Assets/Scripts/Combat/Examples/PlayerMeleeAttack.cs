@@ -14,6 +14,11 @@ namespace Game.Combat.Examples
         [SerializeField] private Animator animator;
         [SerializeField] private float attackCooldown = 0.5f;
         
+        [Header("Audio Settings")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip attackSound;
+        [SerializeField] [Range(0f, 1f)] private float attackSoundVolume = 1f;
+        
         [Header("Input - New Input System")]
         [SerializeField] private bool useMouseLeftClick = true;
         [SerializeField] private Key alternativeKey = Key.Space;
@@ -31,25 +36,36 @@ namespace Game.Combat.Examples
         /// </summary>
         public bool IsAttacking => isAttacking;
         
-        private void Awake()
+    private void Awake()
+    {
+        // 카메라 자동 할당
+        if (mainCamera == null)
         {
-            // 카메라 자동 할당
-            if (mainCamera == null)
+            mainCamera = Camera.main;
+        }
+        
+        // AudioSource 자동 할당
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
             {
-                mainCamera = Camera.main;
-            }
-            
-            if (weaponHitBox != null)
-            {
-                weaponHitBox.SetOwner(gameObject);
-                // 히트박스가 처음에 비활성화되어 있는지 확인
-                weaponHitBox.Deactivate();
-            }
-            else
-            {
-                Debug.LogError("[PlayerMeleeAttack] Weapon HitBox is not assigned! Please assign it in the Inspector!");
+                audioSource = gameObject.AddComponent<AudioSource>();
+                audioSource.playOnAwake = false;
             }
         }
+        
+        if (weaponHitBox != null)
+        {
+            weaponHitBox.SetOwner(gameObject);
+            // 히트박스가 처음에 비활성화되어 있는지 확인
+            weaponHitBox.Deactivate();
+        }
+        else
+        {
+            Debug.LogError("[PlayerMeleeAttack] Weapon HitBox is not assigned! Please assign it in the Inspector!");
+        }
+    }
         
         private void Update()
         {
@@ -170,24 +186,31 @@ namespace Game.Combat.Examples
             }
         }
         
-        /// <summary>
-        /// 애니메이션 이벤트에서 호출 - 공격 판정 시작
-        /// </summary>
-        public void OnAttackStart()
+    /// <summary>
+    /// 애니메이션 이벤트에서 호출 - 공격 판정 시작
+    /// </summary>
+    public void OnAttackStart()
+    {
+        Debug.Log("[PlayerMeleeAttack] OnAttackStart - Activating HitBox");
+        
+        // 공격 사운드 재생
+        if (audioSource != null && attackSound != null)
         {
-            Debug.Log("[PlayerMeleeAttack] OnAttackStart - Activating HitBox");
-            
-            if (weaponHitBox != null)
-            {
-                weaponHitBox.ResetHitTargets();
-                weaponHitBox.Activate();
-                Debug.Log($"[PlayerMeleeAttack] HitBox activated! GameObject active: {weaponHitBox.gameObject.activeSelf}");
-            }
-            else
-            {
-                Debug.LogError("[PlayerMeleeAttack] Weapon HitBox is NULL! Please assign in Inspector!");
-            }
+            audioSource.PlayOneShot(attackSound, attackSoundVolume);
+            Debug.Log("[PlayerMeleeAttack] Playing attack sound");
         }
+        
+        if (weaponHitBox != null)
+        {
+            weaponHitBox.ResetHitTargets();
+            weaponHitBox.Activate();
+            Debug.Log($"[PlayerMeleeAttack] HitBox activated! GameObject active: {weaponHitBox.gameObject.activeSelf}");
+        }
+        else
+        {
+            Debug.LogError("[PlayerMeleeAttack] Weapon HitBox is NULL! Please assign in Inspector!");
+        }
+    }
         
         /// <summary>
         /// 애니메이션 이벤트에서 호출 - 공격 판정 종료
