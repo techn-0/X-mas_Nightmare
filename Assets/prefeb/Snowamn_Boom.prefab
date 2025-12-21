@@ -46,6 +46,7 @@ GameObject:
   - component: {fileID: 2805219119854083230}
   - component: {fileID: 6559455736162667323}
   - component: {fileID: 4097678387861090326}
+  - component: {fileID: -5354744300327002116}
   m_Layer: 7
   m_Name: Snowamn_Boom
   m_TagString: Untagged
@@ -165,7 +166,19 @@ MonoBehaviour:
         m_Calls: []
     OnDeath:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: -2977231138555481486, guid: a3952ef9d69abe141b0ce1fa288d2a62, type: 3}
+          m_TargetAssemblyTypeName: HealthPackDropper, Assembly-CSharp
+          m_MethodName: TryDropHealthPack
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     OnHealthChanged:
       m_PersistentCalls:
         m_Calls: []
@@ -212,6 +225,21 @@ MonoBehaviour:
   explosionEffect: {fileID: 8082215763926354752, guid: c03ba0565330dfb4d8b7d66461f6fb92, type: 3}
   explosionSound: {fileID: 8300000, guid: 58625602ac4f3424f8809e586ba3b5bb, type: 3}
   explosionSoundVolume: 1
+--- !u!114 &-5354744300327002116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1716563104548125485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c2e14e1fec04dca86599fdf46da4e3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthPackDropper
+  healthPackPrefab: {fileID: 3294612095126780209, guid: 60298029c46409d46bed76e237298834, type: 3}
+  dropChance: 0.5
+  dropOffset: {x: 0, y: 0.5, z: 0}
 --- !u!1 &4851613081570246296
 GameObject:
   m_ObjectHideFlags: 0
