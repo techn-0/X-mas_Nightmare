@@ -19302,7 +19302,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   explodeOnTerrain: 1
-  hitEffectPrefab: {fileID: 8082215763926354752, guid: c03ba0565330dfb4d8b7d66461f6fb92, type: 3}
+  hitEffectPrefab: {fileID: 7526768410514910965, guid: 1ff94df9f4b877049bb2cc12ee38aa48, type: 3}
   launchSound: {fileID: 0}
   hitSound: {fileID: 8300000, guid: 58625602ac4f3424f8809e586ba3b5bb, type: 3}
   soundVolume: 1

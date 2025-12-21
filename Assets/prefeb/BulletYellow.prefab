@@ -4865,7 +4865,7 @@ MonoBehaviour:
     m_Bits: 64
   explodeOnTerrain: 0
   hitEffectPrefab: {fileID: 0}
-  launchSound: {fileID: 8300000, guid: dd8db3f9ea395ff49909fb8d2d1fb421, type: 3}
+  launchSound: {fileID: 8300000, guid: 15ec042c5330b894397fe2b560e22a98, type: 3}
   hitSound: {fileID: 0}
   soundVolume: 0.434
 --- !u!1 &182802

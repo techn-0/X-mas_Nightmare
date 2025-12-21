@@ -9,12 +9,25 @@ public class PlayerController : MonoBehaviour
     
     [Header("Combat Integration")]
     [SerializeField] private bool allowRotationDuringAttack = false;
+    
+    [Header("Dash Settings")]
+    [SerializeField] private float dashSpeed = 20f;
+    [SerializeField] private float dashDuration = 0.3f;
+    [SerializeField] private float dashCooldown = 1.5f;
+    [SerializeField] private GameObject dashEffectPrefab;
+    [SerializeField] private float dashEffectDuration = 0.5f;
 
     private CharacterController _controller;
     private Animator _animator;
     private bool isAttacking = false;
     private bool isFiring = false;
     private Vector3 velocity;
+    
+    // Dash variables
+    private bool isDashing = false;
+    private float dashTimer = 0f;
+    private float dashCooldownTimer = 0f;
+    private Vector3 dashDirection = Vector3.zero;
 
     void Start()
     {
@@ -24,6 +37,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // 쿨타임 타이머 감소
+        if (dashCooldownTimer > 0)
+        {
+            dashCooldownTimer -= Time.deltaTime;
+        }
+        
         // 공격/발사 상태 체크
         CheckCombatState();
         
@@ -40,8 +59,31 @@ public class PlayerController : MonoBehaviour
 
         // 이동 방향 계산
         Vector3 moveDirection = new Vector3(inputVector.x, 0f, inputVector.y).normalized;
-
-        if (moveDirection.magnitude >= 0.1f)
+        
+        // 대시 입력 체크 (스페이스바)
+        if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame 
+            && !isDashing && dashCooldownTimer <= 0f && moveDirection.magnitude >= 0.1f)
+        {
+            StartDash(moveDirection);
+        }
+        
+        // 대시 중일 때
+        if (isDashing)
+        {
+            dashTimer -= Time.deltaTime;
+            
+            if (dashTimer <= 0f)
+            {
+                isDashing = false;
+            }
+            else
+            {
+                // 대시 이동
+                _controller.Move(dashDirection * dashSpeed * Time.deltaTime);
+            }
+        }
+        // 일반 이동
+        else if (moveDirection.magnitude >= 0.1f)
         {
             // 이동
             _controller.Move(moveDirection * moveSpeed * Time.deltaTime);
@@ -102,6 +144,37 @@ public class PlayerController : MonoBehaviour
         if (flamethrower != null)
         {
             isFiring = flamethrower.IsFiring;
+        }
+    }
+    
+    /// <summary>
+    /// 대시를 시작합니다
+    /// </summary>
+    private void StartDash(Vector3 direction)
+    {
+        isDashing = true;
+        dashTimer = dashDuration;
+        dashCooldownTimer = dashCooldown;
+        dashDirection = direction;
+        
+        // 대시 이펙트 활성화
+        if (dashEffectPrefab != null)
+        {
+            dashEffectPrefab.SetActive(true);
+            StartCoroutine(DeactivateDashEffectAfterDelay());
+        }
+    }
+    
+    /// <summary>
+    /// 대시 이펙트를 일정 시간 후 비활성화합니다
+    /// </summary>
+    private System.Collections.IEnumerator DeactivateDashEffectAfterDelay()
+    {
+        yield return new WaitForSeconds(dashEffectDuration);
+        
+        if (dashEffectPrefab != null)
+        {
+            dashEffectPrefab.SetActive(false);
         }
     }
 }
