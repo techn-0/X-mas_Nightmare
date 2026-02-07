@@ -4867,7 +4867,7 @@ MonoBehaviour:
   hitEffectPrefab: {fileID: 0}
   launchSound: {fileID: 8300000, guid: 15ec042c5330b894397fe2b560e22a98, type: 3}
   hitSound: {fileID: 0}
-  soundVolume: 0.434
+  soundVolume: 1
 --- !u!1 &165854
 GameObject:
   m_ObjectHideFlags: 0

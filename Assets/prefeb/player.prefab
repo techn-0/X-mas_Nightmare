@@ -2044,7 +2044,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Game.Combat.PlayerHealth
   healthSystem:
-    maxHP: 100
+    maxHP: 300
     isInvincible: 1
     OnDamaged:
       m_PersistentCalls:
