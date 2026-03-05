@@ -1,4 +1,5 @@
-![image.png](attachment:0c67432c-d63a-4cf1-b395-f915b3c635d3:image.png)![image.png](attachment:0c67432c-d63a-4cf1-b395-f915b3c635d3:image.png)
+
+<img width="971" height="547" alt="image (3)" src="https://github.com/user-attachments/assets/e67c7dc7-5e52-4521-8ed7-32cd4f658cfe" />
 
 # **개요**
 
@@ -119,7 +120,8 @@ public interface IDamageable
 
 ### **근접 공격 (`PlayerMeleeAttack.cs`)**
 
-![image.png](attachment:e7932969-ca7a-4a15-8a8e-7877441db4d8:image.png)
+
+<img width="768" height="489" alt="image (4)" src="https://github.com/user-attachments/assets/0f7ae83d-803d-4fe9-9f6f-72bdf3c149e2" />
 
 **주요 기능**:
 
@@ -139,7 +141,8 @@ public interface IDamageable
 
 ### **화염방사기 (`PlayerFlamethrower.cs`)**
 
-![image.png](attachment:157562d8-c7fd-43b6-acd6-fbda5ced3c12:image.png)
+<img width="824" height="478" alt="image (5)" src="https://github.com/user-attachments/assets/7c333959-f7c0-410b-892b-a7cb43acc1d1" />
+
 
 **주요 기능**:
 
@@ -160,9 +163,9 @@ public interface IDamageable
 
 ### **눈사람 AI (`SnowmanAI.cs`)**
 
-![image.png](attachment:0290cd61-e0bb-450f-b4d7-889cc4385e49:0dcaa576-9c16-4ca4-b2c4-51a161e73abb.png)
+<img width="445" height="324" alt="image (6)" src="https://github.com/user-attachments/assets/d12acb9a-9106-4e00-8f22-6e48a4ee553a" />
+<img width="584" height="427" alt="image (7)" src="https://github.com/user-attachments/assets/80cb9887-7989-4981-a8b6-238177bc1d32" />
 
-![image.png](attachment:2157c744-3a79-41fe-ad9e-fe62ba05d43c:image.png)
 
 **AI 상태 머신**:
 
@@ -194,10 +197,10 @@ damageable.TakeDamage(damageInfo);
 ```
 
 ### **폭발 눈사람 AI (`ExplosiveSnowmanAI.cs`)**
+<img width="427" height="337" alt="image (8)" src="https://github.com/user-attachments/assets/969846e3-7ddd-4bc1-886c-fcee16052167" />
+<img width="665" height="534" alt="image (9)" src="https://github.com/user-attachments/assets/6413ca60-5372-4234-88e1-d1f2abf795b7" />
 
-![image.png](attachment:9f5c3079-ddee-447e-a444-830802a0e8f9:b22f2c6a-aa89-4ac1-8ba8-1543d5e10510.png)
 
-![image.png](attachment:672a09b4-8d6d-4081-9a0b-b949d72eb0fd:38b0dde3-5766-424c-8523-646be6cf0238.png)
 
 **특수 기능**:
 
@@ -206,10 +209,10 @@ damageable.TakeDamage(damageInfo);
 - 폭발 효과와 사운드 연출
 
 ### **보스 산타 AI (`BossSantaAI.cs`)**
+<img width="665" height="534" alt="image (9)" src="https://github.com/user-attachments/assets/b8a086d8-b258-47d6-87de-aa34aef200e9" />
+<img width="699" height="578" alt="image (10)" src="https://github.com/user-attachments/assets/a9d9026f-79aa-4790-b67d-67b6cd03fc79" />
 
-![image.png](attachment:469ae7d1-d9c5-4143-8597-ab6c86756e42:image.png)
 
-![image.png](attachment:6e4d7762-a2d3-466b-938b-241b052f2347:image.png)
 
 **목표**: 1일 게임잼의 클라이맥스를 위한 도전적인 보스 구현
 
